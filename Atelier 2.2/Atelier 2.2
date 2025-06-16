@@ -1,0 +1,45 @@
+-- 1. Affichez le pays des clients qui habitent à Toulouse.
+SELECT pays FROM clients WHERE ville = 'Toulouse';
+
+-- 2. Affichez le nom, le prénom et la fonction des employés dirigés par l’employé numéro 2.
+SELECT nom, prenom, fonction FROM employes WHERE superieur_id = 2;
+
+-- 3. Affichez le nom, le prénom et la fonction des employés qui ne sont pas des représentants.
+SELECT nom, prenom, fonction FROM employes WHERE fonction <> 'Représentant';
+
+-- 4. Affichez le nom, le prénom et la fonction des employés qui ont un salaire inférieur à 3500.
+SELECT nom, prenom, fonction FROM employes WHERE salaire < 3500;
+
+-- 5. Affichez le nom, la ville et le pays des clients qui n’ont pas de fax.
+SELECT nom, ville, pays FROM clients WHERE fax IS NULL OR fax = '';
+
+-- 6. Affichez le nom, le prénom et la fonction des employés qui n’ont pas de supérieur.
+SELECT nom, prenom, fonction FROM employes WHERE superieur_id IS NULL;
+
+-- 7. Affichez le nom, le prénom et la fonction des employés qui ne sont ni des représentants, ni des assistants.
+SELECT nom, prenom, fonction 
+FROM employes 
+WHERE fonction NOT IN ('Représentant', 'Assistant');
+
+-- 8. Affichez les clients qui sont localisés en France ou en Belgique, mais pas à Paris ni à Bruxelles.
+SELECT * FROM clients 
+WHERE pays IN ('France', 'Belgique') 
+AND ville NOT IN ('Paris', 'Bruxelles');
+
+-- 9. Affichez les employés qui ont une commission supérieure à 3000 et une ancienneté inférieure à 2 ans.
+-- On suppose que l'ancienneté est la différence entre la date du jour et date_embauche.
+SELECT nom, prenom, fonction 
+FROM employes 
+WHERE commission > 3000 
+AND DATEDIFF(CURDATE(), date_embauche) < 365 * 2;
+
+-- 10. Affichez les produits dont le prix est compris entre 100 et 500 ou dont la quantité en stock est inférieure à 10.
+SELECT * FROM produits 
+WHERE (prix BETWEEN 100 AND 500) 
+OR quantite_en_stock < 10;
+
+-- 11. Affichez les employés nés avant 1990 qui sont soit directeurs soit chefs de projet.
+SELECT nom, prenom, fonction 
+FROM employes 
+WHERE date_naissance < '1990-01-01' 
+AND fonction IN ('Directeur', 'Chef de projet');
