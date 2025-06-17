@@ -1,102 +1,113 @@
-DROP TABLE IF EXISTS produits;
+-- Suppression des tables dans l'ordre des dépendances
+DROP TABLE IF EXISTS Hierarchie;
+DROP TABLE IF EXISTS Commandes;
+DROP TABLE IF EXISTS Produits;
+DROP TABLE IF EXISTS Clients;
+DROP TABLE IF EXISTS Categories;
+DROP TABLE IF EXISTS Fournisseurs;
+DROP TABLE IF EXISTS Employes;
 
-DROP TABLE IF EXISTS employes;
+-- Création des tables
 
-DROP TABLE IF EXISTS clients;
- 
-CREATE TABLE clients (
-
+CREATE TABLE Employes (
     id INT PRIMARY KEY,
-
     nom VARCHAR(50),
-
-    ville VARCHAR(50),
-
-    pays VARCHAR(50),
-
-    fax VARCHAR(50)
-
-);
- 
-CREATE TABLE employes (
-
-    id INT PRIMARY KEY,
-
-    nom VARCHAR(50),
-
     prenom VARCHAR(50),
-
     fonction VARCHAR(50),
-
-    salaire DECIMAL(10,2),
-
-    date_embauche DATE,
-
-    commission DECIMAL(10,2),
-
-    date_naissance DATE,
-
-    superieur_id INT
-
+    salaire DECIMAL(10, 2),
+    id_superieur INT,
+    FOREIGN KEY (id_superieur) REFERENCES Employes(id)
 );
- 
-CREATE TABLE produits (
 
+CREATE TABLE Fournisseurs (
     id INT PRIMARY KEY,
-
-    nom VARCHAR(50),
-
-    prix DECIMAL(10,2),
-
-    quantite_en_stock INT
-
+    nom VARCHAR(100)
 );
 
- 
--- Clients
+CREATE TABLE Categories (
+    id INT PRIMARY KEY,
+    nom VARCHAR(100)
+);
 
-INSERT INTO clients VALUES
+CREATE TABLE Produits (
+    id INT PRIMARY KEY,
+    nom VARCHAR(100),
+    id_fournisseur INT,
+    id_categorie INT,
+    quantite INT,
+    FOREIGN KEY (id_fournisseur) REFERENCES Fournisseurs(id),
+    FOREIGN KEY (id_categorie) REFERENCES Categories(id)
+);
 
-(1, 'Dupont SARL', 'Toulouse', 'France', '0123456789'),
+CREATE TABLE Clients (
+    id INT PRIMARY KEY,
+    nom VARCHAR(100),
+    ville VARCHAR(100)
+);
 
-(2, 'Martin & Co', 'Paris', 'France', NULL),
+CREATE TABLE Commandes (
+    id INT PRIMARY KEY,
+    id_client INT,
+    id_employe INT,
+    FOREIGN KEY (id_client) REFERENCES Clients(id),
+    FOREIGN KEY (id_employe) REFERENCES Employes(id)
+);
 
-(3, 'BXL Corp', 'Bruxelles', 'Belgique', '026666666'),
+CREATE TABLE Hierarchie (
+    id_employe INT,
+    id_superieur INT,
+    PRIMARY KEY (id_employe, id_superieur),
+    FOREIGN KEY (id_employe) REFERENCES Employes(id),
+    FOREIGN KEY (id_superieur) REFERENCES Employes(id)
+);
 
-(4, 'NiceFood', 'Nice', 'France', NULL),
+-- Insertion des données
 
-(5, 'AnversPro', 'Anvers', 'Belgique', '023333333');
- 
--- Employés
+INSERT INTO Employes (id, nom, prenom, fonction, salaire, id_superieur) VALUES
+(1, 'Durand', 'Jean', 'Vendeur', 3000, 3),
+(2, 'Martin', 'Claire', 'Comptable', 2700, NULL),
+(3, 'Dupont', 'Luc', 'Manager', 4000, NULL),
+(4, 'Lemoine', 'Sophie', 'Vendeur', 3200, 3),
+(5, 'Roux', 'Paul', 'Vendeur', 2500, 3);
 
-INSERT INTO employes VALUES
+INSERT INTO Fournisseurs (id, nom) VALUES
+(1, 'Fournisseur A'),
+(2, 'Fournisseur B'),
+(3, 'Fournisseur C'),
+(4, 'Fournisseur D');
 
-(1, 'Durand', 'Jean', 'Directeur', 5000, '2022-01-01', 2000, '1980-05-15', NULL),
+INSERT INTO Categories (id, nom) VALUES
+(1, 'Boissons'),
+(2, 'Snacks'),
+(3, 'Électronique'),
+(4, 'Papeterie'),
+(5, 'Hygiène'),
+(6, 'Entretien'),
+(7, 'Jouets'),
+(8, 'Mode');
 
-(2, 'Lemoine', 'Alice', 'Chef de projet', 4500, '2023-03-01', 1000, '1988-10-10', 1),
+INSERT INTO Produits (id, nom, id_fournisseur, id_categorie, quantite) VALUES
+(1, 'Coca-Cola', 1, 1, 100),
+(2, 'Chips BBQ', 2, 2, 200),
+(3, 'Imprimante HP', 3, 3, 50),
+(4, 'Stylo Bic', 1, 4, 300),
+(5, 'Gel douche', 2, 5, 150),
+(6, 'Peluche Panda', 3, 7, 80),
+(7, 'Sweat capuche', 4, 8, 120),
+(8, 'Clavier mécanique', 3, 3, 30);
 
-(3, 'Petit', 'Luc', 'Représentant', 3000, '2021-06-01', 3500, '1995-09-09', 2),
+INSERT INTO Clients (id, nom, ville) VALUES
+(1, 'Client Parisien', 'Paris'),
+(2, 'Client Lyonnais', 'Lyon'),
+(3, 'Client Bordelais', 'Bordeaux');
 
-(4, 'Legrand', 'Sophie', 'Assistant', 2800, '2020-01-01', 500, '1992-07-07', 2),
+INSERT INTO Commandes (id, id_client, id_employe) VALUES
+(1, 1, 1),
+(2, 2, 4),
+(3, 1, 4),
+(4, 3, 5);
 
-(5, 'Bernard', 'Clara', 'Ingénieur', 3400, '2024-01-01', 0, '1998-02-02', 2),
-
-(6, 'Moreau', 'Nicolas', 'Responsable', 3300, '2024-09-01', 3200, '1991-11-11', NULL),
-
-(7, 'Roux', 'Chloé', 'Chef de projet', 4000, '2018-01-01', 800, '1989-12-12', 1);
- 
--- Produits
-
-INSERT INTO produits VALUES
-
-(1, 'Imprimante', 150, 5),
-
-(2, 'Ordinateur', 900, 25),
-
-(3, 'Souris', 15, 200),
-
-(4, 'Scanner', 450, 3),
-
-(5, 'Tablette', 300, 50);
-
- 
+INSERT INTO Hierarchie (id_employe, id_superieur) VALUES
+(1, 3),
+(4, 3),
+(5, 3);
