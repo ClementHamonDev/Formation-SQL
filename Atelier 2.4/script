@@ -1,0 +1,270 @@
+CREATE TABLE Employes (
+
+    id INT PRIMARY KEY,
+
+    nom VARCHAR(50),
+
+    prenom VARCHAR(50),
+
+    fonction VARCHAR(50),
+
+    salaire DECIMAL(10, 2),
+
+    id_superieur INT,
+
+    FOREIGN KEY (id_superieur) REFERENCES Employes(id)
+
+);
+ 
+CREATE TABLE Fournisseurs (
+
+    id INT PRIMARY KEY,
+
+    nom VARCHAR(100)
+
+);
+ 
+CREATE TABLE Categories (
+
+    id INT PRIMARY KEY,
+
+    nom VARCHAR(100)
+
+);
+ 
+CREATE TABLE Produits (
+
+    id INT PRIMARY KEY,
+
+    nom VARCHAR(100),
+
+    id_fournisseur INT,
+
+    id_categorie INT,
+
+    quantite INT,
+
+    FOREIGN KEY (id_fournisseur) REFERENCES Fournisseurs(id),
+
+    FOREIGN KEY (id_categorie) REFERENCES Categories(id)
+
+);
+ 
+CREATE TABLE Clients (
+
+    id INT PRIMARY KEY,
+
+    nom VARCHAR(100),
+
+    ville VARCHAR(100)
+
+);
+ 
+CREATE TABLE Commandes (
+
+    id INT PRIMARY KEY,
+
+    id_client INT,
+
+    id_employe INT,
+
+    FOREIGN KEY (id_client) REFERENCES Clients(id),
+
+    FOREIGN KEY (id_employe) REFERENCES Employes(id)
+
+);
+ 
+CREATE TABLE Hierarchie (
+
+    id_employe INT,
+
+    id_superieur INT,
+
+    PRIMARY KEY (id_employe, id_superieur),
+
+    FOREIGN KEY (id_employe) REFERENCES Employes(id),
+
+    FOREIGN KEY (id_superieur) REFERENCES Employes(id)
+
+);
+
+ 
+-- Création des tables
+ 
+CREATE TABLE Employes (
+
+    id INT PRIMARY KEY,
+
+    nom VARCHAR(50),
+
+    prenom VARCHAR(50),
+
+    fonction VARCHAR(50),
+
+    salaire DECIMAL(10, 2),
+
+    id_superieur INT,
+
+    FOREIGN KEY (id_superieur) REFERENCES Employes(id)
+
+);
+ 
+CREATE TABLE Fournisseurs (
+
+    id INT PRIMARY KEY,
+
+    nom VARCHAR(100)
+
+);
+ 
+CREATE TABLE Categories (
+
+    id INT PRIMARY KEY,
+
+    nom VARCHAR(100)
+
+);
+ 
+CREATE TABLE Produits (
+
+    id INT PRIMARY KEY,
+
+    nom VARCHAR(100),
+
+    id_fournisseur INT,
+
+    id_categorie INT,
+
+    quantite INT,
+
+    FOREIGN KEY (id_fournisseur) REFERENCES Fournisseurs(id),
+
+    FOREIGN KEY (id_categorie) REFERENCES Categories(id)
+
+);
+ 
+CREATE TABLE Clients (
+
+    id INT PRIMARY KEY,
+
+    nom VARCHAR(100),
+
+    ville VARCHAR(100)
+
+);
+ 
+CREATE TABLE Commandes (
+
+    id INT PRIMARY KEY,
+
+    id_client INT,
+
+    id_employe INT,
+
+    FOREIGN KEY (id_client) REFERENCES Clients(id),
+
+    FOREIGN KEY (id_employe) REFERENCES Employes(id)
+
+);
+ 
+CREATE TABLE Hierarchie (
+
+    id_employe INT,
+
+    id_superieur INT,
+
+    PRIMARY KEY (id_employe, id_superieur),
+
+    FOREIGN KEY (id_employe) REFERENCES Employes(id),
+
+    FOREIGN KEY (id_superieur) REFERENCES Employes(id)
+
+);
+ 
+-- Insertion des données
+ 
+INSERT INTO Employes (id, nom, prenom, fonction, salaire, id_superieur) VALUES
+
+(1, 'Durand', 'Jean', 'Vendeur', 3000, 3),
+
+(2, 'Martin', 'Claire', 'Comptable', 2700, NULL),
+
+(3, 'Dupont', 'Luc', 'Manager', 4000, NULL),
+
+(4, 'Lemoine', 'Sophie', 'Vendeur', 3200, 3),
+
+(5, 'Roux', 'Paul', 'Vendeur', 2500, 3);
+ 
+INSERT INTO Fournisseurs (id, nom) VALUES
+
+(1, 'Fournisseur A'),
+
+(2, 'Fournisseur B'),
+
+(3, 'Fournisseur C'),
+
+(4, 'Fournisseur D');
+ 
+INSERT INTO Categories (id, nom) VALUES
+
+(1, 'Boissons'),
+
+(2, 'Snacks'),
+
+(3, 'Électronique'),
+
+(4, 'Papeterie'),
+
+(5, 'Hygiène'),
+
+(6, 'Entretien'),
+
+(7, 'Jouets'),
+
+(8, 'Mode');
+ 
+INSERT INTO Produits (id, nom, id_fournisseur, id_categorie, quantite) VALUES
+
+(1, 'Coca-Cola', 1, 1, 100),
+
+(2, 'Chips BBQ', 2, 2, 200),
+
+(3, 'Imprimante HP', 3, 3, 50),
+
+(4, 'Stylo Bic', 1, 4, 300),
+
+(5, 'Gel douche', 2, 5, 150),
+
+(6, 'Peluche Panda', 3, 7, 80),
+
+(7, 'Sweat capuche', 4, 8, 120),
+
+(8, 'Clavier mécanique', 3, 3, 30);
+ 
+INSERT INTO Clients (id, nom, ville) VALUES
+
+(1, 'Client Parisien', 'Paris'),
+
+(2, 'Client Lyonnais', 'Lyon'),
+
+(3, 'Client Bordelais', 'Bordeaux');
+ 
+INSERT INTO Commandes (id, id_client, id_employe) VALUES
+
+(1, 1, 1),
+
+(2, 2, 4),
+
+(3, 1, 4),
+
+(4, 3, 5);
+ 
+INSERT INTO Hierarchie (id_employe, id_superieur) VALUES
+
+(1, 3),
+
+(4, 3),
+
+(5, 3);
+
+ 
