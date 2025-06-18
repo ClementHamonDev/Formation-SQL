@@ -1,0 +1,80 @@
+-- 1. Affichez tous les produits pour lesquels la quantité en stock est inférieure à la moyenne des quantités en stock.
+SELECT *
+FROM Produits
+WHERE quantite < (
+    SELECT AVG(quantite) FROM Produits
+);
+
+-- 2. Affichez les ventes pour lesquelles la quantité vendue est supérieure à la quantité moyenne des ventes réalisées pour le même client.
+SELECT *
+FROM Commandes c1
+WHERE (
+    SELECT AVG(p2.quantite)
+    FROM Commandes c2
+    JOIN Produits p2 ON c2.id_produit = p2.id
+    WHERE c2.id_client = c1.id_client
+) < (
+    SELECT p.quantite
+    FROM Produits p
+    WHERE p.id = c1.id_produit
+);
+
+-- 3. Affichez les produits pour lesquels la quantité en stock est supérieure à la quantité en stock de tous les produits de catégorie 3.
+SELECT *
+FROM Produits
+WHERE quantite > ALL (
+    SELECT quantite
+    FROM Produits
+    WHERE id_categorie = 3
+);
+
+-- 4. Affichez les employés dont le salaire est supérieur à la moyenne des salaires des employés ayant la même fonction.
+SELECT *
+FROM Employes e1
+WHERE salaire > (
+    SELECT AVG(e2.salaire)
+    FROM Employes e2
+    WHERE e2.fonction = e1.fonction
+);
+
+-- 5. Affichez les clients dont le nombre total de ventes est supérieur à la moyenne du nombre de ventes par client.
+SELECT *
+FROM Clients c
+WHERE (
+    SELECT COUNT(*)
+    FROM Commandes cmd
+    WHERE cmd.id_client = c.id
+) > (
+    SELECT AVG(nb)
+    FROM (
+        SELECT COUNT(*) AS nb
+        FROM Commandes
+        GROUP BY id_client
+    ) AS ventes_par_client
+);
+
+-- 6. Affichez les employés qui gagnent moins que la moyenne de tous les employés, toutes fonctions confondues.
+SELECT *
+FROM Employes
+WHERE salaire < (
+    SELECT AVG(salaire)
+    FROM Employes
+);
+
+-- 7. Affichez les employés dont le chiffre d'affaires total généré (en fonction des ventes) est supérieur à la moyenne du chiffre d'affaires généré par tous les employés.
+SELECT e.*
+FROM Employes e
+WHERE (
+    SELECT SUM(p.prix)
+    FROM Commandes c
+    JOIN Produits p ON c.id_produit = p.id
+    WHERE c.id_employe = e.id
+) > (
+    SELECT AVG(ca)
+    FROM (
+        SELECT SUM(p.prix) AS ca
+        FROM Commandes c
+        JOIN Produits p ON c.id_produit = p.id
+        GROUP BY c.id_employe
+    ) AS total_ca
+);
